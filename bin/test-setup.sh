@@ -38,10 +38,10 @@ fi
 
 # Set values from ansible
 
-PROJECT={{ test_project_name }}
-USERNAME={{ test_username }}
-PASSWD={{ test_user_password }}
-EMAIL={{ test_user_email }}
+PROJECT=${TEST_PROJECT_NAME:-test_project}
+USERNAME=${TEST_USERNAME:-test_user}
+PASSWD=${TEST_PASSWORD:-$OS_PASSWORD}
+EMAIL=${TEST_EMAIL:-test@example.com}
 PROJECT_NET_NAME=test_net
 PROJECT_SUBNET_NAME=test_subnet
 PROJECT_ROUTER_NAME=test_router
