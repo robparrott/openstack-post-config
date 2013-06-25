@@ -2,7 +2,10 @@
 
 source /root/keystonerc_admin
 
-source /root/answers.txt
+tmpf=$( mktemp )
+grep "=" /root/answers.txt > ${tmpf} 
+source ${tmpf}
+rm -f ${tmpf}
 
 source ./bin/setup-admin-resources.sh
 source ./bin/test-setup.sh
