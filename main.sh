@@ -1,11 +1,13 @@
 #!/bin/bash -ex
 
-source /root/keystonerc_admin
+source /root/keystonerc_admin || source /root/openrc
 
-tmpf=$( mktemp )
-grep "=" /root/answers.txt > ${tmpf} 
-source ${tmpf}
-rm -f ${tmpf}
+if [ -r /root/answers.txt ]; then
+  tmpf=$( mktemp )
+  grep "=" /root/answers.txt > ${tmpf} 
+  source ${tmpf}
+  rm -f ${tmpf}
+fi
 
 source ./bin/setup-admin-resources.sh
 source ./bin/test-setup.sh

@@ -3,10 +3,12 @@ openstack-post-config
 
 Set of scripts to configure and create objects in a successfully built OpenStack environment.
 
-For now assumes that the 
+For now assumes that
 
-- we used packstack to install, 
-- that there's a set of auth credentiuals in `/root/keystonerc_admin`, and 
-- there's a [packstack](https://github.com/stackforge/packstack) answers file in `/root/answers.txt`.
+- that there's a set of auth credentials in `/root/keystonerc_admin` or `/root/openrc`, and 
+- there's a packstack answers file in `/root/answers.txt` or those values aren't needed.
+
+
+
 
 
