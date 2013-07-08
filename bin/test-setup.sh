@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+NOVA=$( which nova || echo /bin/true )
+QUANTUM=$( which quantum || echo /bin/true )
 
 function get_k_id 
 {
@@ -9,7 +11,7 @@ function get_k_id
 
 function get_q_id 
 {
-   RETVAL=$( quantum ${1}-list | grep ${2} | awk '{print $2}' )
+   RETVAL=$( $QUANTUM ${1}-list | grep ${2} | awk '{print $2}' )
    echo $RETVAL
 }
 
@@ -25,8 +27,8 @@ function get_q_id
 MI_NAME=m1.micro
 
 # Create micro flavor if not present
-if [[ -z $(nova flavor-list | grep $MI_NAME) ]]; then
-    nova flavor-create $MI_NAME 6 128 0 1
+if [[ -z $($NOVA flavor-list | grep $MI_NAME) ]]; then
+    $NOVA flavor-create $MI_NAME 6 128 0 1
 fi
 
 #------------------------------
@@ -76,7 +78,7 @@ fi
 
 PROJECT_NET_ID=$( get_q_id net ${PROJECT_NET_NAME} )
 if [ -z "$PROJECT_NET_ID" ]; then
-  quantum net-create --tenant-id ${PROJECT_ID} ${PROJECT_NET_NAME}
+  $QUANTUM net-create --tenant-id ${PROJECT_ID} ${PROJECT_NET_NAME}
   PROJECT_NET_ID=$( get_q_id net ${PROJECT_NET_NAME} )
 fi
   
@@ -85,7 +87,7 @@ fi
 CIDR="50.50.1.0/24"
 PROJECT_SUBNET_ID=$( get_q_id subnet $CIDR )
 if [ -z "$PROJECT_SUBNET_ID" ]; then
-  quantum subnet-create --tenant-id ${PROJECT_ID} \
+  $QUANTUM subnet-create --tenant-id ${PROJECT_ID} \
                         --name ${PROJECT_SUBNET_NAME} \
                         ${PROJECT_NET_NAME} \
                         $CIDR
@@ -96,18 +98,18 @@ fi
 
 PROJECT_ROUTER_ID=$( get_q_id router ${PROJECT_ROUTER_NAME} )
 if [ -z "$PROJECT_ROUTER_ID" ]; then
-  quantum router-create --tenant-id  ${PROJECT_ID} ${PROJECT_ROUTER_NAME}
+  $QUANTUM router-create --tenant-id  ${PROJECT_ID} ${PROJECT_ROUTER_NAME}
   PROJECT_ROUTER_ID=$( get_q_id router ${PROJECT_ROUTER_NAME} )
 fi
 
 # Add the router to the running l3 agent:
 
-L3_AGENT_ID=$( quantum agent-list | grep "L3 agent" | awk '{print $2}' )
+L3_AGENT_ID=$( $QUANTUM agent-list | grep "L3 agent" | awk '{print $2}' )
 
-quantum l3-agent-router-add ${L3_AGENT_ID}  ${PROJECT_ROUTER_NAME}
+$QUANTUM l3-agent-router-add ${L3_AGENT_ID}  ${PROJECT_ROUTER_NAME}
 
 # Add the router to the subnet:
-quantum router-interface-add ${PROJECT_ROUTER_ID} ${PROJECT_SUBNET_ID}
+$QUANTUM router-interface-add ${PROJECT_ROUTER_ID} ${PROJECT_SUBNET_ID}
 
 
 
@@ -115,11 +117,11 @@ quantum router-interface-add ${PROJECT_ROUTER_ID} ${PROJECT_SUBNET_ID}
 # Setup some security groups
 # -----------------------------
 
-quantum security-group-create  --tenant-id ${PROJECT_ID}  test-webservers --description "security group for webservers"
-SEC_GROUP_ID=$( quantum security-group-list | grep test-webservers | awk '{print $2}' )
+$QUANTUM security-group-create  --tenant-id ${PROJECT_ID}  test-webservers --description "security group for webservers"
+SEC_GROUP_ID=$( $QUANTUM security-group-list | grep test-webservers | awk '{print $2}' )
 
 # Creating security group rule to allow web access
-quantum security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol icmp --port_range_min -1 --port_range_max -1  --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
-quantum security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol tcp --port_range_min 22  --port_range_max 22  --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
-quantum security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol tcp --port_range_min 80  --port_range_max 80  --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
-quantum security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol tcp --port_range_min 443 --port_range_max 443 --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
+$QUANTUM security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol icmp --port_range_min -1 --port_range_max -1  --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
+$QUANTUM security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol tcp --port_range_min 22  --port_range_max 22  --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
+$QUANTUM security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol tcp --port_range_min 80  --port_range_max 80  --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
+$QUANTUM security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol tcp --port_range_min 443 --port_range_max 443 --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}

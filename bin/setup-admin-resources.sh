@@ -5,7 +5,7 @@
 # Assumes working installation of quantum
 #
 
-QUANTUM=$( which quantum || /bin/true )
+QUANTUM=$( which quantum || echo /bin/true )
 
 function get_k_id 
 {
