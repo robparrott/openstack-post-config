@@ -9,9 +9,6 @@ if [ -r /root/answers.txt ]; then
   rm -f ${tmpf}
 fi
 
-source ./bin/setup-admin-resources.sh
-source ./bin/test-setup.sh
-
 IMAGES="http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img \
         http://storage.core-os.net/coreos/amd64-generic/dev-channel/coreos_production_openstack_image.img.bz2 \
         http://cloud-images.ubuntu.com/raring/20131008/raring-server-cloudimg-amd64-disk1.img \
@@ -23,3 +20,6 @@ IMAGES="http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img \
 for IMAGE in ${IMAGES}; do 
 	./bin/upload-image.sh ${IMAGE}
 done
+
+source ./bin/setup-admin-resources.sh
+source ./bin/test-setup.sh
