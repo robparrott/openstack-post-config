@@ -58,6 +58,12 @@ function upload_image() {
         fi
     fi
 
+    # unbzip anything that has been copmressed
+    if [[ ${IMAGE_FNAME} =~ '.bz2' ]]; then
+       bunzip2 $FILES/$IMAGE_FNAME
+       IMAGE_FNAME=$( echo $IMAGE_FNAME | sed 's/\.bz2//' )
+    fi 
+
     # OpenVZ-format images are provided as .tar.gz, but not decompressed prior to loading
     if [[ "$image_url" =~ 'openvz' ]]; then
         IMAGE="$FILES/${IMAGE_FNAME}"
