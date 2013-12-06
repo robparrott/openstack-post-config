@@ -60,7 +60,7 @@ function upload_image() {
 
     # unbzip anything that has been copmressed
     if [[ ${IMAGE_FNAME} =~ '.bz2' ]]; then
-       bunzip2 $FILES/$IMAGE_FNAME
+       bunzip2 $FILES/$IMAGE_FNAME || /bin/true
        IMAGE_FNAME=$( echo $IMAGE_FNAME | sed 's/\.bz2//' )
     fi 
 
