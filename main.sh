@@ -22,4 +22,4 @@ for IMAGE in ${IMAGES}; do
 done
 
 source ./bin/setup-admin-resources.sh
-source ./bin/test-setup.sh
+source ./bin/demo-setup.sh

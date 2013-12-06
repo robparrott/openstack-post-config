@@ -40,13 +40,13 @@ fi
 
 # Set values from ansible
 
-PROJECT=${TEST_PROJECT_NAME:-test_project}
-USERNAME=${TEST_USERNAME:-test_user}
-PASSWD=${TEST_PASSWORD:-$OS_PASSWORD}
-EMAIL=${TEST_EMAIL:-test@example.com}
-PROJECT_NET_NAME=test_net
-PROJECT_SUBNET_NAME=test_subnet
-PROJECT_ROUTER_NAME=test_router
+PROJECT=${DEMO_PROJECT_NAME:-demo_project}
+USERNAME=${DEMO_USERNAME:-demo_user}
+PASSWD=${DEMO_PASSWORD:-$OS_PASSWORD}
+EMAIL=${DEMO_EMAIL:-demo@example.com}
+PROJECT_NET_NAME=demo_net
+PROJECT_SUBNET_NAME=demo_subnet
+PROJECT_ROUTER_NAME=demo_router
 
 # Create a project and get its ID
 
@@ -70,7 +70,7 @@ fi
 
 #------------------------------
 #
-# Create networks for the test user
+# Create networks for the demo user
 #
 #------------------------------
 
@@ -117,8 +117,8 @@ $QUANTUM router-interface-add ${PROJECT_ROUTER_ID} ${PROJECT_SUBNET_ID}
 # Setup some security groups
 # -----------------------------
 
-$QUANTUM security-group-create  --tenant-id ${PROJECT_ID}  test-webservers --description "security group for webservers"
-SEC_GROUP_ID=$( $QUANTUM security-group-list | grep test-webservers | awk '{print $2}' )
+$QUANTUM security-group-create  --tenant-id ${PROJECT_ID}  demo-webservers --description "security group for webservers"
+SEC_GROUP_ID=$( $QUANTUM security-group-list | grep demo-webservers | awk '{print $2}' )
 
 # Creating security group rule to allow web access
 $QUANTUM security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol icmp --port_range_min -1 --port_range_max -1  --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
