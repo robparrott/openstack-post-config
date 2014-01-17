@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#
+# Load any functions
+#
+for i in $( ls include/ ); do
+  source include/${i}
+done
+
+
 #function get_k_id 
 # { 
 #   RETVAL=$( keystone ${1}-list | grep "${2}" | awk '{print $2}' )

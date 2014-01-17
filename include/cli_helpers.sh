@@ -17,3 +17,9 @@ function get_image
 
   echo ${ID}
 }
+
+#function get_image_id 
+# {
+#  id=$( glance image-show ${1} | grep "^| id " | awk '{print $4}' )
+#  echo ${id}
+#}
