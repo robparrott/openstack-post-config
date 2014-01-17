@@ -33,7 +33,8 @@ fi
 
 #------------------------------
 #
-# Setup a separate set of test user objects
+# Setup a separate set of demo
+#   user objects
 #
 #------------------------------
 
