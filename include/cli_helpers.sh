@@ -6,7 +6,7 @@ function get_k_id
 
 function get_q_id 
 {
-   RETVAL=$( neutron ${1}-list | grep "${2}" | awk '{print $2}' )
+   RETVAL=$( neutron ${1}-list | grep "${2}" | awk '{print $2}' | tail -1 )
    echo $RETVAL
 }
 

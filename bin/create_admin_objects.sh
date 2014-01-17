@@ -46,7 +46,7 @@ tenant_id=$( get_k_id tenant " ${tenant} " )
 nova    quota-update --instances 100 ${tenant_id}
 nova    quota-update --cores     100 ${tenant_id}
 nova    quota-update --ram    102400 ${tenant_id}
-neutron quota-update --port     200 
+neutron quota-update --port     200  > /dev/null
 
 #
 # Make sure we have an image to use 
@@ -63,7 +63,7 @@ if [ -z ${CIRROS_IMAGE_ID} ]; then
     CIRROS_IMAGE_ID=$( echo "${IMAGE_INFO}" |  grep "| id" | awk '{print $4}' )
 fi
 
-echo "IMAGE_ID: ${CIRROS_IMAGE_ID}"
+#echo "IMAGE_ID: ${CIRROS_IMAGE_ID}"
 
 
 #
@@ -81,7 +81,7 @@ if [ -z ${F19_IMAGE_ID} ]; then
     F19_IMAGE_ID=$( echo "${IMAGE_INFO}" |  grep "| id" | awk '{print $4}' )
 fi
 
-echo "IMAGE2_ID: ${F19_IMAGE_ID}"
+#echo "IMAGE2_ID: ${F19_IMAGE_ID}"
 
 
 #--------------------------
@@ -168,8 +168,8 @@ if [ -z ${SECGROUP_ID} ]; then
 fi
 neutron security-group-rule-create --direction ingress --protocol tcp --port_range_min 22 --port_range_max 22    ${SECGROUP_ID}
 neutron security-group-rule-create --direction ingress --protocol icmp  ${SECGROUP_ID}
-neutron security-group-rule-create --direction egress  --protocol tcp --port_range_min 1  --port_range_max 65536 ${SECGROUP_ID}
-neutron security-group-rule-create --direction egress  --protocol udp --port_range_min 1  --port_range_max 65536 ${SECGROUP_ID}
+neutron security-group-rule-create --direction egress  --protocol tcp --port_range_min 1  --port_range_max 65535 ${SECGROUP_ID}
+neutron security-group-rule-create --direction egress  --protocol udp --port_range_min 1  --port_range_max 65535 ${SECGROUP_ID}
 neutron security-group-rule-create --direction egress --protocol icmp  ${SECGROUP_ID}
 
 #
@@ -184,12 +184,12 @@ fi
 # Creating security group rule to allow web access and pinging
 
 neutron security-group-rule-create --direction ingress --protocol icmp \
-                                   --port_range_min -1 --port_range_max -1  \
-                                   --remote-ip-prefix 0.0.0.0/0  ${SECGROUP_ID}
-for p in "22 80 443"; do                                   
+                                   --remote-ip-prefix 0.0.0.0/0  ${SECGROUP_ID} > /dev/null
+ports="22 80 443"
+for p in ${ports}; do                                   
   neutron security-group-rule-create --direction ingress  --protocol tcp \
                                    --port_range_min ${p}  --port_range_max ${p}   \
-                                   --remote-ip-prefix 0.0.0.0/0 ${SECGROUP_ID}
+                                   --remote-ip-prefix 0.0.0.0/0 ${SECGROUP_ID} > /dev/null
 done
 
 
