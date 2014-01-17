@@ -22,7 +22,7 @@ source localrc
 # Load any functions
 #
 for i in $( ls include/ ); do
-  source ${i}
+  source include/${i}
 done
 
 #
