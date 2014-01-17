@@ -49,6 +49,26 @@ fi
 
 echo "IMAGE2_ID: ${F19_IMAGE_ID}"
 
+#
+# TODO Create testing tenants and users
+#
+#
+#- name: create a test tenant
+#  keystone_user: token={{ admin_token.stdout }} tenant=test_tenant tenant_description="New Tenant for Testing"
+#  register: tenant1
+#
+#- name: create a test tenant again
+#  keystone_user: token={{ admin_token.stdout }} tenant=test_tenant2  tenant_description="New Tenant for Testing v2"
+#  register: tenant2
+#
+#- name: Create the user for tenant 1
+#  keystone_user: token={{ admin_token.stdout }} user=test_user tenant=test_tenant
+#                                  password={{ admin_pass.stdout }}
+#
+#- name: Create the user for tenant 2
+#  keystone_user: token={{ admin_token.stdout }} user=test_user2 tenant=test_tenant2
+#                                  password={{ admin_pass.stdout }}
+
 
 #
 # Create Neutron objects

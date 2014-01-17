@@ -152,15 +152,37 @@ neutron router-gateway-set "${ROUTER}" ${pub_net_id} || /bin/true
 #
 # Modify the default security group to allow outbound access
 #
-SECGROUP_ID=$(  neutron security-group-list | grep " default " | tail -1 | awk '{print $2 }' )
-if [ -z ${SECGROUP_ID} ]; then
 
+SECGROUP_ID=$( get_q_id security-group default ) # neutron security-group-list | grep " default " | tail -1 | awk '{print $2 }' )
+if [ -z ${SECGROUP_ID} ]; then
    neutron security-group-create default --description "default"
-   SECGROUP_ID=$(  neutron security-group-list | grep " default " | tail -1 | awk '{print $2 }' )
+   SECGROUP_ID=$( get_q_id security-group default ) 
 fi
 neutron security-group-rule-create --direction ingress --protocol tcp --port_range_min 22 --port_range_max 22    ${SECGROUP_ID}
 neutron security-group-rule-create --direction ingress --protocol icmp  ${SECGROUP_ID}
 neutron security-group-rule-create --direction egress  --protocol tcp --port_range_min 1  --port_range_max 65536 ${SECGROUP_ID}
 neutron security-group-rule-create --direction egress  --protocol udp --port_range_min 1  --port_range_max 65536 ${SECGROUP_ID}
 neutron security-group-rule-create --direction egress --protocol icmp  ${SECGROUP_ID}
+
+#
+# Create another admin security group
+# 
+SECGROUP_ID=$( get_q_id security-group admin-secgroup  ) 
+if [ -z ${SECGROUP_ID} ]; then
+   neutron security-group-create admin-secgroup --description "admin-secgroup"
+   SECGROUP_ID=$( get_q_id security-group admin-secgroup  ) 
+fi
+
+# Creating security group rule to allow web access and pinging
+
+neutron security-group-rule-create --direction ingress --protocol icmp \
+                                   --port_range_min -1 --port_range_max -1  \
+                                   --remote-ip-prefix 0.0.0.0/0  ${SECGROUP_ID}
+for p in "22 80 443"; do                                   
+  neutron security-group-rule-create --direction ingress  --protocol tcp \
+                                   --port_range_min ${p}  --port_range_max ${p}   \
+                                   --remote-ip-prefix 0.0.0.0/0 ${SECGROUP_ID}
+done
+
+
 

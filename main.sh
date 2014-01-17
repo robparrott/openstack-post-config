@@ -47,7 +47,8 @@ done
 #
 # Create a testing environment for tempest
 #
-source ./bin/create_testing_objects.sh
+echo "skipping creation of testing objects for now..."
+#source ./bin/create_testing_objects.sh
 
 #
 # Create a demo user setup
