@@ -36,7 +36,7 @@ MI_NAME=m1.micro
 
 # Create micro flavor if not present
 if [[ -z $($NOVA flavor-list | grep $MI_NAME) ]]; then
-    $NOVA flavor-create $MI_NAME 6 128 0 1
+    $NOVA flavor-create $MI_NAME 17 256 0 1
 fi
 
 #------------------------------
@@ -125,12 +125,23 @@ $QUANTUM router-interface-add ${PROJECT_ROUTER_ID} ${PROJECT_SUBNET_ID}
 #------------------------------
 # Setup some security groups
 # -----------------------------
-
-$QUANTUM security-group-create  --tenant-id ${PROJECT_ID}  demo-webservers --description "security group for webservers"
-SEC_GROUP_ID=$( $QUANTUM security-group-list | grep demo-webservers | awk '{print $2}' )
+SECGROUP_ID=$( get_q_id security-group demo-webservers  ) 
+if [ -z ${SECGROUP_ID} ]; then
+   neutron security-group-create admin-secgroup --description "demo-webservers"
+   SECGROUP_ID=$( get_q_id security-group demo-webservers  ) 
+fi
 
 # Creating security group rule to allow web access
-$QUANTUM security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol icmp --port_range_min -1 --port_range_max -1  --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
+neutron security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol icmp \
+                                      --remote-ip-prefix 0.0.0.0/0 ${SECGROUP_ID}
+ports="22 80 443"
+for p in ${ports}; do                                   
+  neutron security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress  --protocol tcp \
+                                   --port_range_min ${p}  --port_range_max ${p}   \
+                                   --remote-ip-prefix 0.0.0.0/0 ${SECGROUP_ID} > /dev/null
+done
+
+
 $QUANTUM security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol tcp --port_range_min 22  --port_range_max 22  --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
 $QUANTUM security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol tcp --port_range_min 80  --port_range_max 80  --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
 $QUANTUM security-group-rule-create --tenant-id ${PROJECT_ID} --direction ingress --protocol tcp --port_range_min 443 --port_range_max 443 --remote-ip-prefix 0.0.0.0/0 ${SEC_GROUP_ID}
