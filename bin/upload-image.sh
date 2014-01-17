@@ -29,6 +29,11 @@ function get_field() {
     done
 }
 
+function get_image_id 
+{
+  id=$( glance image-show ${1} | grep "^| id " | awk '{print $4}' )
+  echo ${id}
+}
 
 # Retrieve an image from a URL and upload into Glance
 # Uses the following variables:
@@ -48,8 +53,10 @@ function upload_image() {
     # Create a directory for the downloaded image tarballs.
     mkdir -p $FILES/images
 
-    # Downloads the image (uec ami+aki style), then extracts it.
+    # Determine the image name and options to use
     IMAGE_FNAME=`basename "$image_url"`
+
+    # Downloads the image (uec ami+aki style), then extracts it.
     if [[ ! -f $FILES/$IMAGE_FNAME || "$(stat -c "%s" $FILES/$IMAGE_FNAME)" = "0" ]]; then
         wget -c $image_url -O $FILES/$IMAGE_FNAME
         if [[ $? -ne 0 ]]; then
@@ -68,6 +75,7 @@ function upload_image() {
     if [[ "$image_url" =~ 'openvz' ]]; then
         IMAGE="$FILES/${IMAGE_FNAME}"
         IMAGE_NAME="${IMAGE_FNAME%.tar.gz}"
+        id=$( get_image_id $IMAGE_NAME )
         glance $token_arg \
                --os-image-url http://$GLANCE_HOSTPORT \
                image-create \
@@ -83,6 +91,7 @@ function upload_image() {
     if [[ "$image_url" =~ '.vhd.tgz' ]]; then
         IMAGE="$FILES/${IMAGE_FNAME}"
         IMAGE_NAME="${IMAGE_FNAME%.vhd.tgz}"
+        id=$( get_image_id $IMAGE_NAME )
         glance $token_arg \
                --os-image-url http://$GLANCE_HOSTPORT \
                image-create \
@@ -150,6 +159,12 @@ function upload_image() {
             ;;
         *) echo "Do not know what to do with $IMAGE_FNAME"; false;;
     esac
+
+    # Check for an image already loaded before doing a create
+    id=$( get_image_id $IMAGE_NAME )
+    if ! [ "x${id}" = "x" ]; then
+        return
+    fi
 
     if [ "$CONTAINER_FORMAT" = "bare" ]; then
         if [ "$UNPACK" = "zcat" ]; then
