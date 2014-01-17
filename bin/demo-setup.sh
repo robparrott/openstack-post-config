@@ -36,7 +36,7 @@ MI_NAME=m1.micro
 
 # Create micro flavor if not present
 if [[ -z $($NOVA flavor-list | grep $MI_NAME) ]]; then
-    $NOVA flavor-create $MI_NAME 17 256 0 1
+    $NOVA flavor-create $MI_NAME 17 256 0 1 > /dev/null 2&>1
 fi
 
 #------------------------------
@@ -114,8 +114,7 @@ fi
 # Add the router to the running l3 agent:
 
 L3_AGENT_ID=$( $QUANTUM agent-list | grep "L3 agent" | awk '{print $2}' )
-
-$QUANTUM l3-agent-router-add ${L3_AGENT_ID}  ${PROJECT_ROUTER_NAME}
+$QUANTUM l3-agent-router-add ${L3_AGENT_ID}  ${PROJECT_ROUTER_NAME} > /dev/null 2&>1 
 
 # Add the router to the subnet:
 $QUANTUM router-interface-add ${PROJECT_ROUTER_ID} ${PROJECT_SUBNET_ID}
@@ -127,7 +126,7 @@ $QUANTUM router-interface-add ${PROJECT_ROUTER_ID} ${PROJECT_SUBNET_ID}
 # -----------------------------
 SECGROUP_ID=$( get_q_id security-group demo-webservers  ) 
 if [ -z ${SECGROUP_ID} ]; then
-   neutron security-group-create admin-secgroup --description "demo-webservers"
+   neutron security-group-create --tenant-id ${PROJECT_ID} demo-secgroup --description "demo-webservers"
    SECGROUP_ID=$( get_q_id security-group demo-webservers  ) 
 fi
 
