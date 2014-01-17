@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#
+# Load any functions
+#
+for i in $( ls include/ ); do
+  source include/${i}
+done
+
+
 #function get_k_id 
 # {
 #   RETVAL=$( keystone ${1}-list | grep "${2}" | awk '{print $2}' )
@@ -52,23 +60,31 @@ echo "IMAGE2_ID: ${F19_IMAGE_ID}"
 #
 # TODO Create testing tenants and users
 #
-#
-#- name: create a test tenant
-#  keystone_user: token={{ admin_token.stdout }} tenant=test_tenant tenant_description="New Tenant for Testing"
-#  register: tenant1
-#
-#- name: create a test tenant again
-#  keystone_user: token={{ admin_token.stdout }} tenant=test_tenant2  tenant_description="New Tenant for Testing v2"
-#  register: tenant2
-#
-#- name: Create the user for tenant 1
-#  keystone_user: token={{ admin_token.stdout }} user=test_user tenant=test_tenant
-#                                  password={{ admin_pass.stdout }}
-#
-#- name: Create the user for tenant 2
-#  keystone_user: token={{ admin_token.stdout }} user=test_user2 tenant=test_tenant2
-#                                  password={{ admin_pass.stdout }}
+TENANT_ID=$( get_k_id tenant test_tenant)
+if [ -z "$TENANT_ID" ]; then
+  keystone tenant-create --name test_tenant
+  TENANT_ID=$( get_k_id tenant test_tenant)
+fi
+TENANT2_ID=$( get_k_id tenant test_tenant2)
+if [ -z "$TENANT2_ID" ]; then
+  keystone tenant-create --name test_tenant2
+  TENANT2_ID=$( get_k_id tenant test_tenant2)
+fi
 
+
+ROLE_ID=$( get_k_id role "Member" )
+USER_ID=$( get_k_id user test_user )
+if [ -z "$USER_ID" ]; then
+  keystone user-create --name=test_user --pass=${OS_PASSWORD} --tenant-id ${TENANT_ID}
+  USER_ID=$( get_k_id user test_user  )
+  keystone user-role-add --tenant-id ${TENANT_ID} --user-id ${USER_ID} --role-id ${ROLE_ID}
+fi
+USER2_ID=$( get_k_id user test_user2 )
+if [ -z "$USER2_ID" ]; then
+  keystone user-create --name=test_user2 --pass=${OS_PASSWORD} --tenant-id ${TENANT2_ID}
+  USER_ID=$( get_k_id user test_user2  )
+  keystone user-role-add --tenant-id ${TENANT2_ID} --user-id ${USER2_ID} --role-id ${ROLE_ID}
+fi
 
 #
 # Create Neutron objects
