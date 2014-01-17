@@ -82,7 +82,7 @@ fi
 USER2_ID=$( get_k_id user test_user2 )
 if [ -z "$USER2_ID" ]; then
   keystone user-create --name=test_user2 --pass=${OS_PASSWORD} --tenant-id ${TENANT2_ID}
-  USER_ID=$( get_k_id user test_user2  )
+  USER2_ID=$( get_k_id user test_user2  )
   keystone user-role-add --tenant-id ${TENANT2_ID} --user-id ${USER2_ID} --role-id ${ROLE_ID}
 fi
 
