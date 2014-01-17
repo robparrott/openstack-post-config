@@ -160,6 +160,8 @@ neutron router-gateway-set "${ROUTER}" ${pub_net_id} || /bin/true
 #
 # Modify the default security group to allow outbound access
 #
+# These may already be created, but try anyway... no harm done.
+#
 
 SECGROUP_ID=$( get_q_id security-group default ) # neutron security-group-list | grep " default " | tail -1 | awk '{print $2 }' )
 if [ -z ${SECGROUP_ID} ]; then
