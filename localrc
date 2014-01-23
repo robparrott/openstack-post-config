@@ -22,8 +22,10 @@ IMAGES="http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img \
         http://cloud-images.ubuntu.com/releases/13.04/release/ubuntu-13.04-server-cloudimg-amd64-disk1.img \
         http://download.fedoraproject.org/pub/fedora/linux/releases/19/Images/x86_64/Fedora-x86_64-19-20130627-sda.qcow2 \
         http://knoppix.hostingxtreme.com/KNOPPIX_V7.2.0CD-2013-06-16-EN.iso \
-        http://softlayer-dal.dl.sourceforge.net/project/nst/NST/NST%2018-4509/nst-18-4509.i686.iso "
-
+        http://softlayer-dal.dl.sourceforge.net/project/nst/NST/NST%2018-4509/nst-18-4509.i686.iso \
+        http://repos.fedorapeople.org/repos/openstack/guest-images/centos-6.5-20140117.0.x86_64.qcow2 \
+        http://savanna-files.mirantis.com/savanna-0.3-vanilla-1.2.1-fedora-19.qcow2 \
+        "
 
 #
 # Network objects 
