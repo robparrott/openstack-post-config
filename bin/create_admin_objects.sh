@@ -101,7 +101,7 @@ fi
 
 subnet_id=$( get_q_id subnet "${CIDR}" )
 if [ -z ${subnet_id} ]; then
-    neutron subnet-create --dns-nameserver {{ nameserver }} --tenant_id "$tenant_id" "${NET}" "${CIDR}"
+    neutron subnet-create --dns-nameserver ${dns_server} --tenant_id "$tenant_id" "${NET}" "${CIDR}"
     subnet_id=$( get_q_id subnet "${CIDR}" )
 fi
 
@@ -116,7 +116,7 @@ fi
 
 subnet_id2=$( get_q_id subnet "${CIDR}" )
 if [ -z ${subnet_id2} ]; then
-    neutron subnet-create --dns-nameserver {{ nameserver }} --tenant_id $tenant_id "${NET}" "${CIDR}"
+    neutron subnet-create --dns-nameserver ${dns_server} --tenant_id $tenant_id "${NET}" "${CIDR}"
     subnet_id2=$( get_q_id subnet "${CIDR}" )
 fi
 
@@ -137,7 +137,8 @@ neutron router-interface-add "${ROUTER}" ${subnet_id2} || /bin/true
 #  and configure the external network as router gw 
 #
 PUBNET=public
-CIDR="{{ gateway_cidr }}"
+CIDR="${pub_cidr}" 
+
 pub_net_id=$( get_q_id net "${PUBNET}" )
 if [ -z ${pub_net_id} ]; then                                                                                                          
     neutron net-create "${PUBNET}" --tenant_id $tenant_id --shared --router:external=True
@@ -151,8 +152,8 @@ if [ -z ${pub_subnet_id} ]; then
                             --disable-dhcp \
                             --name public \
                             --allocation-pool=start=${floating_ip_start},end=${floating_ip_end} \
-                            --dns-nameserver {{ nameserver }} \
-                            --gateway={{ gateway }} || /bin/true
+                            --dns-nameserver ${dns_server}  \
+                            --gateway ${pub_gateway} || /bin/true
     pub_subnet_id=$( get_q_id subnet ${CIDR} )
 fi
 neutron router-gateway-set "${ROUTER}" ${pub_net_id} || /bin/true

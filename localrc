@@ -32,3 +32,7 @@ IMAGES="http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img \
 #
 floating_ip_start=10.255.75.4
 floating_ip_end=10.255.75.253
+
+dns_server=128.103.200.101
+pub_gateway=10.255.75.1
+pub_cidr=10.255.75.0/24
