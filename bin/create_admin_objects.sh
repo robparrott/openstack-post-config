@@ -7,19 +7,7 @@ for i in $( ls include/ ); do
   source include/${i}
 done
 
-
-#function get_k_id 
-# { 
-#   RETVAL=$( keystone ${1}-list | grep "${2}" | awk '{print $2}' )
-#   echo $RETVAL
-#}
-
-#function get_q_id 
-# {
-#   RETVAL=$( neutron ${1}-list | grep "${2}" | awk '{print $2}' )
-#   echo $RETVAL
-#}
-
+. localrc
 
 cd /tmp
 
