@@ -75,7 +75,7 @@ WORKER_TMPL_ID=$( http ${SAVANNA_URL}/${OS_TENANT_ID}/node-group-templates X-Aut
 #
 # Create cluster templates
 #
-http POST ${SAVANNA_URL}/${OS_TENANT_ID}/cluster-templates  <<EOF
+http POST ${SAVANNA_URL}/${OS_TENANT_ID}/cluster-templates X-Auth-Token:$AUTH_TOKEN  <<EOF
 {
     "name": "demo-cluster-template",
     "plugin_name": "vanilla",
@@ -93,6 +93,7 @@ http POST ${SAVANNA_URL}/${OS_TENANT_ID}/cluster-templates  <<EOF
         }
     ]
 }
+EOF
 
 
 
