@@ -12,8 +12,14 @@ done
 cd /tmp
 
 export SAVANNA_URL="http://localhost:8386/v1.0"
-export IMAGE_NAME=savanna-0.3-vanilla-1.2.1-fedora-19
-export IMAGE_URL=http://savanna-files.mirantis.com/savanna-0.3-vanilla-1.2.1-fedora-19.qcow2 
+
+export IMAGE_NAME=savanna-0.3-vanilla-1.2.1-ubuntu-13.04
+export IMAGE_URL=http://savanna-files.mirantis.com/savanna-0.3-vanilla-1.2.1-ubuntu-13.04.qcow2
+export IMAGE_LOGIN_USER=ubuntu
+
+#export IMAGE_NAME=savanna-0.3-vanilla-1.2.1-fedora-19
+#export IMAGE_URL=http://savanna-files.mirantis.com/savanna-0.3-vanilla-1.2.1-fedora-19.qcow2 
+#export IMAGE_LOGIN_USER=root
 
 #
 # Get an auth token, and tenant ID
@@ -42,7 +48,7 @@ IMAGE_ID=$( get_image ${IMAGE_NAME} )
 #
 # register image with savanna
 #
-http POST ${SAVANNA_URL}/${OS_TENANT_ID}/images/${IMAGE_ID} X-Auth-Token:${AUTH_TOKEN} username=root
+http POST ${SAVANNA_URL}/${OS_TENANT_ID}/images/${IMAGE_ID} X-Auth-Token:${AUTH_TOKEN} username=${IMAGE_LOGIN_USER}
 
 #
 # Write node templates

@@ -54,3 +54,9 @@ echo "skipping creation of testing objects for now..."
 # Create a demo user setup
 #
 source ./bin/demo-setup.sh
+
+#
+# Create a basic Savanna setup, or fail trying...
+#
+source ./bin/create_savanna_cluster.sh
+
