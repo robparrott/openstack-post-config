@@ -80,7 +80,7 @@ function openstack_purge_instances()
 function openstack_purge_ports()
 {
     SEARCH_STRING="${1: }"
-    for port in `neutron port-list -c id | egrep -v '\-\-|id' | grep "${SEARCH_STRING}" | awk '{print $2}'`
+    for port in `neutron port-list -c id -c name | egrep -v '\-\-|id' | grep "${SEARCH_STRING}" | awk '{print $2}'`
     do
         neutron port-delete ${port}
     done
@@ -89,7 +89,7 @@ function openstack_purge_ports()
 function openstack_purge_routers()
 {
     SEARCH_STRING="${1: }"
-    for router in `neutron router-list -c id | egrep -v '\-\-|id' | grep "${SEARCH_STRING}" | awk '{print $2}'`
+    for router in `neutron router-list -c id -c name | egrep -v '\-\-|id' | grep "${SEARCH_STRING}" | awk '{print $2}'`
     do
         for subnet in `neutron router-port-list ${router} -c fixed_ips -f csv | egrep -o '[0-9a-z\-]{36}'`
         do
@@ -103,7 +103,7 @@ function openstack_purge_routers()
 function openstack_purge_subnets()
 {
     SEARCH_STRING="${1: }"
-    for subnet in `neutron subnet-list -c id | egrep -v '\-\-|id' | grep "${SEARCH_STRING}" | awk '{print $2}'`
+    for subnet in `neutron subnet-list -c id -c name | egrep -v '\-\-|id' | grep "${SEARCH_STRING}" | awk '{print $2}'`
     do
         neutron subnet-delete ${subnet}
     done
