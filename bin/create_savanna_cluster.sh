@@ -13,6 +13,7 @@ cd /tmp
 
 export SAVANNA_URL="http://localhost:8386/v1.0"
 export IMAGE_NAME=savanna-0.3-vanilla-1.2.1-fedora-19
+export IMAGE_URL=http://savanna-files.mirantis.com/savanna-0.3-vanilla-1.2.1-fedora-19.qcow2 
 
 #
 # Get an auth token, and tenant ID
@@ -27,6 +28,11 @@ OS_TENANT_ID=$( keystone token-get | grep " tenant_id "  | awk '{print $4}' )
 # Install a python REST client
 #
 easy_install httpie 
+
+#
+# upload an image for glance
+#
+./bin/upload-image.sh ${IMAGE_URL}
 
 #
 # Determine ID of savanna image
