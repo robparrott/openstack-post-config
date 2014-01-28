@@ -13,7 +13,7 @@ function get_q_id
 function get_image
 {
   NAME=$1 
-  ID=$( glance index | grep ${NAME} | awk '{print $1}' ) 
+  ID=$( glance image-list| grep -v '\-\-\-' | grep ${NAME} | awk '{print $2}' ) 
 
   echo ${ID}
 }
