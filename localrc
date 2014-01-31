@@ -36,3 +36,10 @@ floating_ip_end=10.255.75.253
 dns_server=128.103.200.101
 pub_gateway=10.255.75.1
 pub_cidr=10.255.75.0/24
+
+#
+# Access objects
+#
+FLOATING_IP_NET_NAME=public
+AUTH_KEYS_URL=https://raw.github.com/robparrott/keys/master/parrott-public.pub
+

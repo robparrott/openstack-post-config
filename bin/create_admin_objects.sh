@@ -183,5 +183,23 @@ for p in ${ports}; do
                                    --remote-ip-prefix 0.0.0.0/0 ${SECGROUP_ID} > /dev/null
 done
 
+     
+#
+# Add in keypairs
+#
+
+
+TMPFILE1=$(mktemp)
+curl ${AUTH_KEYS_URL} > ${TMPFILE1}
+while read line
+do
+  comment=$( echo $line | awk '{ print $NF }' | tr '@' '_' | tr '.' '_') 
+  TMPFILE2=$(mktemp)
+  echo $line > ${TMPFILE2}
+  nova keypair-add --pub-key ${TMPFILE2} "${comment}"
+  rm -f ${TMPFILE2}
+done  < ${TMPFILE1}
+rm -f ${TMPFILE1}
+
 
 
