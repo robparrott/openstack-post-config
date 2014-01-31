@@ -46,6 +46,11 @@ easy_install httpie
 IMAGE_ID=$( get_image ${IMAGE_NAME} )
 
 #
+# Determine ID of public floating IP pool
+IP_POOL_ID=$( neutron net-list -c id -c name | sed 's/|//g' | grep ${FLOATING_IP_NET_NAME:-public} | awk '{print $1}' )
+
+
+#
 # register image with savanna
 #
 http POST ${SAVANNA_URL}/${OS_TENANT_ID}/images/${IMAGE_ID} X-Auth-Token:${AUTH_TOKEN} username=${IMAGE_LOGIN_USER}
@@ -56,7 +61,8 @@ http POST ${SAVANNA_URL}/${OS_TENANT_ID}/images/${IMAGE_ID} X-Auth-Token:${AUTH_
 http POST ${SAVANNA_URL}/${OS_TENANT_ID}/node-group-templates X-Auth-Token:$AUTH_TOKEN <<EOF
 {
     "name": "test-master-tmpl",
-    "flavor_id": "2",
+    "flavor_id": "3",
+    "floating_ip_pool": "${IP_POOL_ID}",
     "plugin_name": "vanilla",
     "hadoop_version": "1.2.1",
     "node_processes": ["jobtracker", "namenode"]
@@ -67,7 +73,8 @@ EOF
 http POST ${SAVANNA_URL}/${OS_TENANT_ID}/node-group-templates X-Auth-Token:$AUTH_TOKEN <<EOF
 {
     "name": "test-worker-tmpl",
-    "flavor_id": "2",
+    "flavor_id": "3",
+    "floating_ip_pool": "${IP_POOL_ID}",
     "plugin_name": "vanilla",
     "hadoop_version": "1.2.1",
     "node_processes": ["tasktracker", "datanode"]
